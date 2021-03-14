@@ -1,0 +1,175 @@
+package simu.model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import controller.IKontrolleri;
+import controller.Kontrolleri;
+import eduni.distributions.Negexp;
+import eduni.distributions.Normal;
+import eduni.distributions.Uniform;
+import simu.framework.Kello;
+import simu.framework.Moottori;
+import simu.framework.Saapumisprosessi;
+import simu.framework.Tapahtuma;
+/**
+ * 
+ * @author Ammar Daham
+ * 
+ */
+public class OmaMoottori extends Moottori{
+	
+	private Saapumisprosessi saapumisprosessi;
+	
+	int c1 = 0;
+	int c2 = 0;
+	int c3 = 0;
+	String tulokset = "";
+	String historia = "";
+	public static final int JONOLKM=4;
+	public static final int MAXJONOPITUUS=18;
+	int[] jonossa = new int[JONOLKM];
+	Tulokset tulos = new Tulokset();
+	static IDataAccessObject DataDAO = new DataAccessObject();
+	double keskiarvo;
+	private ArrayList<Tulokset> tulokset1 = new ArrayList<>();
+		
+	
+	Kontrolleri kontrolleri;
+	
+	public OmaMoottori(Kontrolleri kontrolleri){
+		super(kontrolleri);
+		palvelupisteet = new Palvelupiste[4];
+		this.kontrolleri=kontrolleri;
+	
+		palvelupisteet[0]=new Palvelupiste(new Normal(kontrolleri.getRespaika(),kontrolleri.getRespaVarianssi()), tapahtumalista, TapahtumanTyyppi.DEP1);	
+		palvelupisteet[1]=new Palvelupiste(new Normal(kontrolleri.getVerikoaika(),kontrolleri.getVerikovarianssi()), tapahtumalista, TapahtumanTyyppi.DEP2);
+		palvelupisteet[2]=new Palvelupiste(new Normal(kontrolleri.getRontgenAika(),kontrolleri.getRontgenVarianssi()), tapahtumalista, TapahtumanTyyppi.DEP3);
+		palvelupisteet[3]=new Palvelupiste(new Normal(kontrolleri.getNayteAika(),kontrolleri.getNayteVarianssi()), tapahtumalista, TapahtumanTyyppi.DEP4);
+		
+		
+		saapumisprosessi = new Saapumisprosessi(new Normal(kontrolleri.saapumisv√§liaika(),2), tapahtumalista, TapahtumanTyyppi.ARR1);
+		
+	}
+
+	
+	@Override
+	protected void alustukset() {
+		saapumisprosessi.generoiSeuraava(); // EnsimmÔøΩinen saapuminen jÔøΩrjestelmÔøΩÔøΩn
+	}
+	
+	protected int generoiSatunaispalvelu() {
+		Uniform ui= new Uniform(1, 10);
+		int luku = (int)(ui.sample());
+		if(luku >= 1 && luku <= 3) {
+			return 1;
+		} else if(luku >= 4 && luku <= 6) {
+			return 2;
+		}else {
+		return 3;
+		}
+	}
+	
+	
+	
+	
+	@Override
+	protected void suoritaTapahtuma(Tapahtuma t){  // B-vaiheen tapahtumat
+		
+		Asiakas a;
+		switch (t.getTyyppi()){
+						//lis√§√§ respan jonoon
+			case ARR1: palvelupisteet[0].lisaaJonoon(new Asiakas());	
+				       saapumisprosessi.generoiSeuraava();
+				       //visualisointi
+				       if (jonossa[0]<MAXJONOPITUUS) {
+							kontrolleri.naytaAsiakas(0,++jonossa[0]);
+						};
+				break;
+				//Respa ,jono 0
+			case DEP1: a = palvelupisteet[0].otaJonosta();
+						int seuraavaPalvelu=generoiSatunaispalvelu();
+		   	   			palvelupisteet[seuraavaPalvelu].lisaaJonoon(a);
+		   	   			//seuraavan palvelun jonon visualisointi
+		   	   		if (jonossa[seuraavaPalvelu]<MAXJONOPITUUS) {
+						kontrolleri.naytaAsiakas(seuraavaPalvelu,++jonossa[seuraavaPalvelu]);
+					}
+		   	   		//respasta poisto samalla
+		   	   		if(jonossa[0]>0) {
+		   	   			kontrolleri.piilotaAsiakas(0, jonossa[0]--);
+		   	   			};
+		   	   			break;
+				//verikoe	jono 1
+			case DEP2: a = palvelupisteet[1].otaJonosta();
+					   a.setPoistumisaika(Kello.getInstance().getAika());
+					   //jonosta poisto
+				   	 if(jonossa[1]>0) {
+			   	   			kontrolleri.piilotaAsiakas(1, jonossa[1]--);
+			   	   			}
+				   	   	a.raportti(); 
+				   	   	keskiarvo = a.getkeskiarvo();
+				   	   	c1++;
+				   	   	break;
+			    //Rong jono 2
+			case DEP3: a = palvelupisteet[2].otaJonosta();
+					   a.setPoistumisaika(Kello.getInstance().getAika());
+					   //jonosta poisto
+				   	   if(jonossa[2]>0) {
+		   	   			kontrolleri.piilotaAsiakas(2, jonossa[2]--);
+		   	   			}
+			           a.raportti();
+			           keskiarvo = a.getkeskiarvo();
+			           c2++;
+			           break;  
+			     //Nayte jono 3
+			case DEP4: a = palvelupisteet[3].otaJonosta();
+					   a.setPoistumisaika(Kello.getInstance().getAika());
+					   //jonosta poisto
+					   if(jonossa[3]>0) {
+			   	   		kontrolleri.piilotaAsiakas(3, jonossa[3]--);
+			   	   		}
+			           a.raportti();
+			           keskiarvo = a.getkeskiarvo();
+			           c3++;
+			           break;
+		}	
+	}
+
+	
+	
+	@Override
+	protected void tulokset() {	
+		
+		
+		tulokset = "Simuloinnin p‰‰ttyi: " + Kello.getInstance().getAika() + ".\n" 
+					+ "Asiakkaiden lukumaara on: " + (c1+c2+c3) + ", Asiakkaiden lapimenoaikojen keskiarvo: " + keskiarvo + ", resp asiakkaiden aktiiviaika: " + palvelupisteet[0].getAktiiviaika() + ".\n"  
+					+ "Verikoe asiakkaiden lukumaara: " + c1 + ", verikoe aktiiviaika " + palvelupisteet[1].getAktiiviaika() + ", keskimaarainen palveluaika: " + palvelupisteet[1].getAktiiviaika()/(c1) + ".\n"
+					+ "Rontgen asiakkaiden lukumaara: " + c2 + ", rontgen aktiiviaika: " + palvelupisteet[2].getAktiiviaika() + ", keskimaarainen palveluaika: " + palvelupisteet[2].getAktiiviaika()/(c2) + ".\n" 
+					+"Natye asiakkaiden lukumaara: " + c3 + ", nayte aktiiviaika: " +  palvelupisteet[3].getAktiiviaika() + ", keskimaaarainen palveluaika: " + palvelupisteet[3].getAktiiviaika()/(c3) + ".";
+		
+		
+		tulos.setSimulointiKesto(Kello.getInstance().getAika());
+		tulos.setAsiakasLkm(c1+c2+c3);
+		tulos.setAsiakaidenLapimenoaikaKeskiarvo(keskiarvo);
+		tulos.setVerikoeLkm(c1);
+		tulos.setRontgenLkm(c2);
+		tulos.setNayteLkm(c3);
+		tulos.setRespaAktiiviaika(palvelupisteet[0].getAktiiviaika());
+		tulos.setVerikoeAktiiviaika(palvelupisteet[1].getAktiiviaika());
+		tulos.setRontgenAktiiviaika(palvelupisteet[2].getAktiiviaika());
+		tulos.setNayteAktiiviaika(palvelupisteet[3].getAktiiviaika());
+		tulos.setRespaKeskiarvo(palvelupisteet[0].getAktiiviaika()/(c1+c2+c3));
+		tulos.setVerikoeKeskiarvo(palvelupisteet[1].getAktiiviaika()/(c1+c2+c3));
+		tulos.setRontgenKeskiarvo(palvelupisteet[2].getAktiiviaika()/(c1+c2+c3));
+		tulos.setNayteKeskiarvo(palvelupisteet[3].getAktiiviaika()/(c1+c2+c3));
+	
+		DataDAO.createData(tulos);
+		kontrolleri.getTulokset(tulokset);
+	}
+
+
+}

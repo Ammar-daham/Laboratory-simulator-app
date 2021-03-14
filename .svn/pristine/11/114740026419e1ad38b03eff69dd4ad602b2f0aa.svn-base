@@ -1,0 +1,60 @@
+package view;
+
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import simu.model.*;
+
+public class Visualisointi extends Canvas implements IVisualisointi {
+private GraphicsContext gc;
+	
+	public Visualisointi(int w, int h) {
+		super(w, h);
+		gc = this.getGraphicsContext2D();
+		alustaAnimointi();
+		//tyhjennaNaytto();
+	}
+
+	public void alustaAnimointi() {
+		piirraJonot();
+	}
+	
+	private void piirraJonot() {
+		gc.setLineWidth(1);
+		for (int i = 0; i<OmaMoottori.JONOLKM+1; i++) {
+			gc.setFont(new Font("San Serif", 14));
+			gc.setStroke(Color.BLACK);
+			gc.strokeText(" VastaanOtto ", 100, 15);
+			gc.strokeText(" Verikoe ", 110, 95);
+			gc.strokeText(" Röntgen ", 110, 175);
+			gc.strokeText(" Näyte ", 120, 255);
+			gc.setStroke(Color.DARKGREY);
+			gc.strokeLine(20, 20+i*(320/OmaMoottori.JONOLKM), 380, 20+i*(320/OmaMoottori.JONOLKM));
+			if (i<OmaMoottori.JONOLKM) {
+				gc.setFill(Color.WHITE);
+				for (int j = 1; j<=OmaMoottori.MAXJONOPITUUS; j++) {
+					gc.fillRect(j*20, 20+(i+0.25)*(320/(OmaMoottori.JONOLKM)), 15, 15);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void visualisoiAsiakas(int jono, int monesko) {
+		System.out.println("Visualisoidaan asiakas jonoon " + jono + ", paikka " + monesko);
+		gc.setFill(Color.RED);
+		gc.fillRect(monesko*20, 20+(jono+0.25)*(320/OmaMoottori.JONOLKM), 15, 15);
+		
+	}
+
+	@Override
+	public void poistaVisualisoituAsiakas(int jono, int monesko) {
+		System.out.println("Poistetaan asiakkaan visualisointi jonosta " + jono + ", paikka " + monesko);
+		gc.setFill(Color.LIGHTGREY);
+		gc.fillRect(monesko*20, 20+(jono+0.25)*(320/OmaMoottori.JONOLKM), 15, 15);
+		
+	}
+	
+
+}

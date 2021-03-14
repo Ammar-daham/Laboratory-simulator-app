@@ -1,0 +1,165 @@
+package simu.model;
+
+public class Tulokset {
+	
+	private double simulointiKesto;
+	private int asiakasLkm;
+	private double asiakaidenLapimenoaikaKeskiarvo;
+	private int verikoeLkm;
+	private int rontgenLkm;
+	private int nayteLkm;
+	private double respaAktiiviaika;
+	private double verikoeAktiiviaika;
+	private double rontgenAktiiviaika;
+	private double nayteAktiiviaika;
+	private double respaKeskiarvo;
+	private double verikoeKeskiarvo;
+	private double rontgenKeskiarvo;
+	private double nayteKeskiarvo;
+	
+	public Tulokset(double simulointiKesto, int asiakasLkm, double asiakaidenLapimenoaikaKeskiarvo, int verikoeLkm, int rontgenLkm,
+			int nayteLkm, double respaAktiiviaika, double rontgenAktiiviaika, double nayteAktiiviaika,
+			double respaKeskiarvo, double verikoeKeskiarvo, double rontgenKeskiarvo, double nayteKeskiarvo) {
+		
+		this.simulointiKesto = simulointiKesto;
+		this.asiakasLkm = asiakasLkm;
+		this.asiakaidenLapimenoaikaKeskiarvo = asiakaidenLapimenoaikaKeskiarvo;
+		this.verikoeLkm = verikoeLkm;
+		this.rontgenLkm = rontgenLkm;
+		this.nayteLkm = nayteLkm;
+		this.respaAktiiviaika = respaAktiiviaika;
+		this.verikoeAktiiviaika = verikoeAktiiviaika;
+		this.rontgenAktiiviaika = rontgenAktiiviaika;
+		this.nayteAktiiviaika = nayteAktiiviaika;
+		this.respaKeskiarvo = respaKeskiarvo;
+		this.verikoeKeskiarvo = verikoeKeskiarvo;
+		this.rontgenKeskiarvo = rontgenKeskiarvo;
+		this.nayteKeskiarvo = nayteKeskiarvo;
+		
+	}
+	
+	public double getAsiakaidenLapimenoaikaKeskiarvo() {
+		return asiakaidenLapimenoaikaKeskiarvo;
+	}
+
+	public void setAsiakaidenLapimenoaikaKeskiarvo(double asiakaidenLapimenoaikaKeskiarvo) {
+		this.asiakaidenLapimenoaikaKeskiarvo = asiakaidenLapimenoaikaKeskiarvo;
+	}
+
+	public Tulokset() {
+		
+	}
+	
+	public double getSimulointiKesto() {
+		return simulointiKesto;
+	}
+
+	public void setSimulointiKesto(double simulointiKesto) {
+		this.simulointiKesto = simulointiKesto;
+	}
+
+	public int getAsiakasLkm() {
+		return asiakasLkm;
+	}
+
+	public void setAsiakasLkm(int asiakasLkm) {
+		this.asiakasLkm = asiakasLkm;
+	}
+
+	public int getVerikoeLkm() {
+		return verikoeLkm;
+	}
+
+	public void setVerikoeLkm(int verikoeLkm) {
+		this.verikoeLkm = verikoeLkm;
+	}
+
+	public int getRontgenLkm() {
+		return rontgenLkm;
+	}
+
+	public void setRontgenLkm(int rontgenLkm) {
+		this.rontgenLkm = rontgenLkm;
+	}
+
+	public int getNayteLkm() {
+		return nayteLkm;
+	}
+
+	public void setNayteLkm(int nayteLkm) {
+		this.nayteLkm = nayteLkm;
+	}
+
+	public double getRespaAktiiviaika() {
+		return respaAktiiviaika;
+	}
+
+	public void setRespaAktiiviaika(double respaAktiiviaika) {
+		this.respaAktiiviaika = respaAktiiviaika;
+	}
+
+	public double getVerikoeAktiiviaika() {
+		return verikoeAktiiviaika;
+	}
+
+	public void setVerikoeAktiiviaika(double verikoeAktiiviaika) {
+		this.verikoeAktiiviaika = verikoeAktiiviaika;
+	}
+
+	public double getRontgenAktiiviaika() {
+		return rontgenAktiiviaika;
+	}
+
+	public void setRontgenAktiiviaika(double rontgenAktiiviaika) {
+		this.rontgenAktiiviaika = rontgenAktiiviaika;
+	}
+
+	public double getNayteAktiiviaika() {
+		return nayteAktiiviaika;
+	}
+
+	public void setNayteAktiiviaika(double nayteAktiiviaika) {
+		this.nayteAktiiviaika = nayteAktiiviaika;
+	}
+
+	public double getRespaKeskiarvo() {
+		return respaKeskiarvo;
+	}
+
+	public void setRespaKeskiarvo(double respaKeskiarvo) {
+		this.respaKeskiarvo = respaKeskiarvo;
+	}
+
+	public double getVerikoeKeskiarvo() {
+		return verikoeKeskiarvo;
+	}
+
+	public void setVerikoeKeskiarvo(double verikoeKeskiarvo) {
+		this.verikoeKeskiarvo = verikoeKeskiarvo;
+	}
+
+	public double getRontgenKeskiarvo() {
+		return rontgenKeskiarvo;
+	}
+
+	public void setRontgenKeskiarvo(double rontgenKeskiarvo) {
+		this.rontgenKeskiarvo = rontgenKeskiarvo;
+	}
+
+	public double getNayteKeskiarvo() {
+		return nayteKeskiarvo;
+	}
+
+	public void setNayteKeskiarvo(double nayteKeskiarvo) {
+		this.nayteKeskiarvo = nayteKeskiarvo;
+	}
+
+	public String toString() {
+		return "Simuloinnin p‰‰ttyi: " + getSimulointiKesto() + ".\n" 
+				+ "Asiakkaiden lukumaara on: " + getAsiakasLkm() + ", Asiakkaiden lapimenoaikojen keskiarvo: " + getAsiakaidenLapimenoaikaKeskiarvo() + ", respa aktiiviaika: " + getNayteAktiiviaika() + ".\n" 
+				+ "Verikoe asiakkaiden lukumaara: " + getVerikoeLkm() + ", verikoe aktiiviaika " + getVerikoeAktiiviaika() + ", keskimaarainen palveluaika: " + getVerikoeKeskiarvo() + ".\n"
+				+ "Rontgen asiakkaiden lukumaara: " + getRontgenLkm() + ", rontgen aktiiviaika: " + getRespaAktiiviaika() + ", keskimaarainen palveluaika: " + getRontgenKeskiarvo() + ".\n" 
+				+"Natye asiakkaiden lukumaara: " + getNayteLkm() + ", nayte aktiiviaika: " +  getNayteAktiiviaika() + ", keskimaaarainen palveluaika: " + getNayteKeskiarvo() + ".";
+	}
+	
+}

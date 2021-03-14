@@ -1,0 +1,33 @@
+package simu.model;
+
+import java.util.ArrayList;
+
+/**
+ * @author Ammar Daham
+ */
+
+public class ReadData {
+	
+	private ArrayList<Tulokset> tulokset = new ArrayList<>();
+	
+	private DataAccessObject DataDAO;
+	
+	public ReadData() {
+		DataDAO = new DataAccessObject();
+		Tulokset[] tulosArr = DataDAO.readTulokset();
+		for(Tulokset v : tulosArr) {
+			tulokset.add(v);
+		}
+	}
+	
+	
+	public String[] getVaihtoehdot() {
+		String[] tulokset1 = new String[tulokset.size()];
+		for(int i = 0; i < tulokset.size(); i++) {
+			tulokset1[i] = tulokset.get(i).toString();
+		}
+		return tulokset1;
+	}
+
+
+}

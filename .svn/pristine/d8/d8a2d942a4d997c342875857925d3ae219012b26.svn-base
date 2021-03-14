@@ -1,0 +1,538 @@
+package view;
+
+import java.text.DecimalFormat;
+import controller.IKontrolleri;
+import controller.Kontrolleri;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import simu.framework.Trace;
+import simu.framework.Trace.Level;
+
+public class MainGUI extends Application implements ISimulaattorinUI{
+	Stage window;
+	Scene scene2;
+	Scene scene;
+	Scene scene3;
+	
+	//Kontrollerin esittely (tarvitaan käyttöliittymässä)
+	private IKontrolleri kontrolleri;
+
+	// GUI komponentit:
+	private TextField simulaattoriAika;
+	private TextField saapumisväli;
+	
+	//Säädä palveluaikoja
+	private Label Palvelupisteet;
+	//respapiste
+	private Label Respa;
+	private TextField normaalijakauma1;
+	private TextField varianssi;
+	//verikoe piste
+	private Label Verikoe;
+	private TextField normaalijakauma2;
+	private TextField varianssi2;
+	//rontgen piste
+	private Label rontgen;
+	private TextField normaalijakauma3;
+	private TextField varianssi3;
+	//nayte piste
+	private Label näyte;
+	private TextField normaalijakauma4;
+	private TextField varianssi4;
+		
+	//Tulokset
+	private Label tulokset = new Label("");
+	
+	//Historia
+	private Label historia = new Label("");
+	Kontrolleri ohjain = new Kontrolleri(this);
+	ListView<String> historialistaVasen;
+
+	
+
+	private Button kaynnistaButton;
+	private IVisualisointi naytto;
+
+
+	@Override
+	public void init(){
+		
+		Trace.setTraceLevel(Level.INFO);
+		kontrolleri = new Kontrolleri(this);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		// GUI rakentaminen
+		try {
+			window=primaryStage;
+			window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			    @Override
+			    public void handle(WindowEvent t) {
+			        Platform.exit();
+			        System.exit(0);
+			    }
+			});
+			BorderPane root=new BorderPane();
+			root.setPrefHeight(600);
+			root.setPrefWidth(700);	
+
+			HBox hbox=addHbox();
+			HBox hbox1=addHbox1();
+			HBox hbox2=addHbox2();
+			
+			
+			AnchorPane anchors=anchorPane();
+			root.setTop(hbox);
+			root.setCenter(anchors);
+			root.setBottom(addAnchorPane());
+			scene =new Scene(root);
+			BorderPane root2=new BorderPane();
+			root2.setPrefHeight(600);
+			root2.setPrefWidth(700);	
+			root2.setTop(hbox1);
+			naytto = new Visualisointi(300,300);
+			root2.setCenter( (Canvas)naytto);
+			root2.setBottom(addAnchorPane2());
+			scene2 =new Scene(root2);
+			BorderPane root3=new BorderPane();
+			root3.setPrefHeight(600);
+			root3.setPrefWidth(700);
+			root3.setTop(hbox2);
+			root3.setCenter(historia);
+			historia.setLineSpacing(10);
+			root3.setBottom(addAnchorPane3());
+			scene3=new Scene(root3);
+			
+			window.setTitle("LabraSimulaatori");
+			window.setScene(scene);
+		        window.show();		
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private AnchorPane anchorPane() {
+		//alkutiedot
+		AnchorPane anchor1=new AnchorPane();
+		GridPane grid =new GridPane();
+		grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(0, 10, 0, 10));
+		Label tieto=new Label("Syota esitiedot");
+		tieto.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		Label väliaika=new Label("Asiakkaan saapmuisvaliaika");
+		Label simulointikesto=new Label("Simulointi Kesto");
+		simulaattoriAika=new TextField("1000");
+		saapumisväli=new TextField("5");
+		
+		
+		grid.add(tieto, 0, 0);
+		grid.add(väliaika, 0, 1);
+		grid.add(saapumisväli, 1, 1);
+	
+	
+		grid.add(simulointikesto, 0, 2);
+		grid.add(simulaattoriAika, 1, 2);
+		
+		
+		//palvelu pisteet
+		GridPane palvelut = new GridPane();
+		palvelut.setHgap(50);
+        palvelut.setVgap(10);
+           
+        VBox vbox1 = new VBox();
+	    vbox1.setPadding(new Insets(10));
+	    vbox1.setSpacing(15);
+	    Text palvelupisteet = new Text("Palvelupisteet");
+	    palvelupisteet.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+	    Label vastaanotto = new Label("Vastaanotto");
+	    Label verikoe = new Label("Verikoe");
+	    Label rontgen = new Label("Rontgen");
+	    Label naytepiste = new Label("Naytepiste");
+	    vbox1.getChildren().addAll(palvelupisteet, vastaanotto, verikoe, rontgen, naytepiste);
+	    
+	    VBox vbox2 = new VBox();
+	    vbox2.setPadding(new Insets(10));
+	    vbox2.setSpacing(8);
+	    Text palveluajat = new Text("Palveluajat");
+	    palveluajat.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+	    normaalijakauma1 = new TextField("5");
+	    normaalijakauma2 = new TextField("5");
+	    normaalijakauma3 = new TextField("5");
+	    normaalijakauma4 = new TextField("5");
+	    vbox2.getChildren().addAll(palveluajat, normaalijakauma1, normaalijakauma2, normaalijakauma3, normaalijakauma4);
+	    
+	    VBox vbox3 = new VBox();
+	    vbox3.setPadding(new Insets(10));
+	    vbox3.setSpacing(8);
+	    Text varianssi10 = new Text("Varianssi");
+	    varianssi = new TextField("2");
+	    varianssi10.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+	 
+	     varianssi2 = new TextField("2");
+	     varianssi3 = new TextField("2");
+	     varianssi4 = new TextField("2");
+	    vbox3.getChildren().addAll(varianssi10, varianssi, varianssi2, varianssi3, varianssi4);
+        
+	    palvelut.add(vbox1, 0, 0);
+	    palvelut.add(vbox2, 1, 0);
+	    palvelut.add(vbox3, 2, 0);
+        
+		anchor1.getChildren().addAll(grid,palvelut);
+		anchor1.setTopAnchor(grid, 30.0);
+		anchor1.setTopAnchor(palvelut, 200.0);
+		
+		return anchor1 ;
+	}
+
+	//otsikko
+	private HBox addHbox() {
+		HBox hbox=new HBox();
+		hbox.setPadding(new Insets(15,12,15,12));
+		hbox.setSpacing(10);
+		hbox.setStyle("-fx-background-color:gray;");
+		hbox.setStyle("-fx-border-color: black");
+		Label otsikko=new Label("Laboratorio Simulaattori");
+		otsikko.setFont(Font.font("System", FontWeight.NORMAL, 18));
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().addAll(otsikko);
+		return hbox;
+	}
+
+	private HBox addHbox1() {
+		HBox hbox=new HBox();
+		VBox vbox = new VBox();
+		hbox.setPadding(new Insets(15,12,15,12));
+		hbox.setSpacing(10);
+		vbox.setSpacing(20);
+		tulokset.setLineSpacing(10);
+		Label otsikko=new Label("Tulokset");
+		otsikko.setFont(Font.font("System", FontWeight.NORMAL, 18));
+		vbox.getChildren().addAll(otsikko, tulokset);
+		vbox.setAlignment(Pos.CENTER);
+		hbox.setAlignment(Pos.CENTER);
+		hbox.getChildren().addAll(vbox);
+		return hbox;
+	}
+	
+	private HBox addHbox2() {
+		HBox hbox=new HBox();
+	
+		hbox.setPadding(new Insets(15,12,15,12));
+		hbox.setSpacing(10);
+		Label otsikko=new Label("Historia");
+		otsikko.setFont(Font.font("System", FontWeight.NORMAL, 20));
+		hbox.setAlignment(Pos.CENTER);
+		historialistaVasen = new ListView<String>();
+		historialistaVasen.setPrefSize(650, 500);
+		ObservableList<String> historiaObsVas = FXCollections.observableArrayList();
+		historiaObsVas.addAll(ohjain.getHistoria());
+		historialistaVasen.setItems(historiaObsVas);
+		VBox historiaDivVasen = new VBox();
+		historiaDivVasen.getChildren().addAll(otsikko, historialistaVasen);
+		hbox.getChildren().addAll(historiaDivVasen);
+		return hbox;
+	}
+	
+	public AnchorPane addAnchorPane() {
+	    AnchorPane anchorpane = new AnchorPane();
+	     Button buttonKaynnista = new Button("Kaynnista");
+	     buttonKaynnista.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	
+	            	if(validointi() !=false) {
+	            		window.setScene(scene2);
+	            		kontrolleri.kaynnistaSimulointi();
+	            		
+	            	}
+	            }
+	        });
+	    Button buttonHistoria = new Button("Historia");
+	    buttonHistoria.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	window.setScene(scene3);
+            }
+        });
+	    HBox hb = new HBox();
+	    hb.setPadding(new Insets(0, 10, 10, 10));
+	    hb.setSpacing(10);
+	    hb.getChildren().addAll(buttonKaynnista, buttonHistoria);
+
+	    
+	    anchorpane.getChildren().addAll(hb);   
+	    AnchorPane.setBottomAnchor(hb, 8.0);
+	    AnchorPane.setRightAnchor(hb, 5.0);
+
+	    return anchorpane;
+	}
+	public AnchorPane addAnchorPane2() {
+	    AnchorPane anchorpane = new AnchorPane();
+	    Button takaisin = new Button("Takaisin");
+	     takaisin.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	window.setScene(scene);
+	            }
+	        });
+	    Button buttonHistoria = new Button("Historia");
+	    buttonHistoria.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	window.setScene(scene3);
+            	
+            }
+        });
+	    HBox hb = new HBox();
+	    hb.setPadding(new Insets(0, 10, 10, 10));
+	    hb.setSpacing(10);
+	    hb.getChildren().addAll(takaisin, buttonHistoria);
+
+	    
+	    anchorpane.getChildren().addAll(hb);   
+	    AnchorPane.setBottomAnchor(hb, 8.0);
+	    AnchorPane.setRightAnchor(hb, 5.0);
+
+	    return anchorpane;
+	}
+	public AnchorPane addAnchorPane3() {
+	    AnchorPane anchorpane = new AnchorPane();
+	     Button takaisin1 = new Button("Takaisin");
+	     takaisin1.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	            	window.setScene(scene);	          
+	            }
+	        });
+	
+	    HBox hb = new HBox();
+	    hb.setPadding(new Insets(0, 10, 10, 10));
+	    hb.setSpacing(10);
+	    hb.getChildren().addAll(takaisin1);
+
+	    
+	    anchorpane.getChildren().addAll(hb);  
+	    AnchorPane.setBottomAnchor(hb, 8.0);
+	    AnchorPane.setRightAnchor(hb, 5.0);
+
+	    return anchorpane;
+	}
+	
+
+	  
+	
+
+	//GUI rajapintametodit (kutsutaan kontrollerista)
+
+	public int getAsiakasväliAika(){
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(saapumisväli.getText());
+		}catch(NumberFormatException e) {
+			saapumisväli.setText("Syota numero");
+			
+		}
+		return paluuarvo;
+		
+	}
+	
+
+	public int getSimulointiAika(){
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(simulaattoriAika.getText());
+		}catch(NumberFormatException e) {
+	
+			simulaattoriAika.setText("Syota numero");
+		}
+		return paluuarvo;
+	
+	}
+	public int getRespaAika() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(normaalijakauma1.getText());
+		}catch(NumberFormatException e) {
+			
+			normaalijakauma1.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+		
+	}
+	public int getRespavarianssi() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(varianssi.getText());
+		}catch(NumberFormatException e) {
+			
+			varianssi.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getVerikoeAika() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(normaalijakauma2.getText());
+		}catch(NumberFormatException e) {
+			
+			normaalijakauma2.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getVerikoeVarianssi() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(varianssi2.getText());
+		}catch(NumberFormatException e) {
+	
+			varianssi2.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getRontgenAika() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(normaalijakauma3.getText());
+		}catch(NumberFormatException e) {
+		
+			normaalijakauma3.setText("Syötä numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getRontgenVarianssi() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(varianssi3.getText());
+		}catch(NumberFormatException e) {
+			
+			varianssi3.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getNayteAika() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(normaalijakauma4.getText());
+		}catch(NumberFormatException e) {
+			
+			normaalijakauma4.setText("Syota numero");
+			
+			
+		}
+		return paluuarvo;
+	}
+	public int getNayteVarianssi() {
+		int paluuarvo=0;
+		try {
+		 paluuarvo=	Integer.parseInt(varianssi4.getText());
+		}catch(NumberFormatException e) {
+			e.printStackTrace();
+			varianssi4.setText("Syota numero");
+		}
+		return paluuarvo;
+	}
+	
+
+	@Override
+	public void setLoppuaika(double aika){
+		 DecimalFormat formatter = new DecimalFormat("#0.00");
+	//	 this.tulos.setText(formatter.format(aika));
+	}
+
+	@Override
+
+	public IVisualisointi getVisualisointi() {
+		 return naytto;
+	}
+
+ public static void main(String[] args) {
+		launch(args);
+	}
+
+@Override
+public double getAika() {
+	// TODO Auto-generated method stub
+	return 0;
+}
+
+@Override
+public long getViive() {
+	// TODO Auto-generated method stub
+	return 0;
+}
+
+public void setTulokset(String tulos) {
+	tulokset.setText(tulos);
+}
+
+@Override
+public boolean validointi() {
+	boolean temp=true;
+	if(getAsiakasväliAika()==0 || getSimulointiAika()==0 || getRespaAika()==0 || 
+		getRespavarianssi()==0 || getVerikoeAika()==0 || getVerikoeVarianssi()==0 
+		|| getRontgenAika()==0 || getRontgenVarianssi()==0 || getNayteAika()==0 || getNayteVarianssi()==0) {
+		getAsiakasväliAika();
+		getSimulointiAika();
+		getRespaAika();
+		getRespavarianssi();
+		getVerikoeAika();
+		getVerikoeVarianssi();
+		getRontgenAika();
+		getRontgenVarianssi();
+		getNayteAika();
+		getNayteVarianssi();
+		Alert alert=new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("Ei numero");
+		alert.setContentText("Syota vain numeroita");
+		alert.showAndWait();
+		temp = false;
+	}
+	
+	
+	
+	return temp;
+}
+}

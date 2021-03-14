@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="550.0" prefWidth="650.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1">
+   <children>
+      <SplitPane dividerPositions="0.140625" orientation="VERTICAL" prefHeight="450.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="-4.0" layoutY="21.0" prefHeight="74.4" prefWidth="648.8" text="Laboratorio Simulaattori" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <GridPane layoutX="26.0" layoutY="99.0" minHeight="62.0" minWidth="613.0" prefHeight="62.0" prefWidth="613.0" AnchorPane.bottomAnchor="336.40000000000003" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="70.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.199951171875" minWidth="10.0" prefWidth="153.79998779296875" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.20001220703125" minWidth="10.0" prefWidth="144.20001220703125" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="135.20001220703125" minWidth="10.0" prefWidth="122.39996337890625" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.79998779296875" minWidth="10.0" prefWidth="157.60003662109375" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="156.0" text="Asiakkaiden saapumisväliaika" />
+                        <TextField prefHeight="35.0" prefWidth="149.0" text="0" GridPane.columnIndex="1" />
+                        <TextField text="0" GridPane.columnIndex="3" />
+                        <Label prefHeight="18.0" prefWidth="157.0" text="Simulointi Aika" GridPane.rowIndex="1" />
+                        <TextField text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER" prefHeight="18.0" prefWidth="158.0" text="Varianssi:" GridPane.columnIndex="2">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </GridPane>
+                  <ButtonBar layoutX="97.0" layoutY="329.0" prefHeight="39.0" prefWidth="263.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                    <buttons>
+                      <Button mnemonicParsing="false" text="Käynnistä" />
+                        <Button mnemonicParsing="false" text="Historia" />
+                    </buttons>
+                  </ButtonBar>
+                  <Label layoutX="202.0" layoutY="27.0" text="Syötä esitiedot" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="30.0">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <GridPane layoutX="124.0" layoutY="189.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="221.20001220703125" minWidth="10.0" prefWidth="170.79998779296875" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.79999999999995" minWidth="10.0" prefWidth="200.0000122070312" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Vastaanotto" GridPane.rowIndex="1" />
+                        <Label GridPane.rowIndex="2" />
+                        <Label text="Röntgen" GridPane.rowIndex="3" />
+                        <Label text="Näytepiste" GridPane.rowIndex="4" />
+                        <Label text="Verikoe" GridPane.rowIndex="2" />
+                        <TextField prefWidth="182.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Palvelupisteet">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <Label text="Palveluajat" GridPane.columnIndex="1">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <Label text="Varianssi" GridPane.columnIndex="2">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </Label>
+                        <TextField text="0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <TextField text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField text="0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField text="0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <TextField text="0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField text="0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                     </children>
+                  </GridPane>
+                  <Label layoutX="428.0" layoutY="349.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
